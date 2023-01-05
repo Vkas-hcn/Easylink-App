@@ -18,6 +18,7 @@ import com.vkas.easylinkapp.bean.ElIpBean
 import com.vkas.easylinkapp.bean.ElVpnBean
 import com.vkas.easylinkapp.enevt.Constant
 import com.vkas.easylinkapp.utils.EasyUtils
+import com.vkas.easylinkapp.utils.KLog
 import com.vkas.easylinkapp.utils.MmkvUtils
 import com.xuexiang.xui.utils.Utils
 import com.xuexiang.xutil.XUtil
@@ -110,8 +111,9 @@ class MainViewModel (application: Application) : BaseViewModel(application){
      */
     fun whetherParsingIsIllegalIp(): Boolean {
         val data = mmkvEl.decodeString(Constant.IP_INFORMATION)
+        KLog.e("state","data=${data}===isNullOrEmpty=${Utils.isNullOrEmpty(data)}")
         return if (Utils.isNullOrEmpty(data)) {
-            true
+            false
         } else {
             val ptIpBean: ElIpBean = JsonUtil.fromJson(
                 mmkvEl.decodeString(Constant.IP_INFORMATION),

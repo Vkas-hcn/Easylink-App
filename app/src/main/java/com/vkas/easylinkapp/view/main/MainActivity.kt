@@ -44,6 +44,7 @@ import com.vkas.easylinkapp.utils.MmkvUtils
 import com.vkas.easylinkapp.view.result.ResultElActivity
 import com.vkas.easylinkapp.view.vpnlist.VpnList
 import com.vkas.easylinkapp.view.webel.WebElActivity
+import com.xuexiang.xui.utils.Utils
 import com.xuexiang.xutil.net.JsonUtil
 import com.xuexiang.xutil.net.JsonUtil.toJson
 import com.xuexiang.xutil.net.NetworkUtils.isNetworkAvailable
@@ -296,6 +297,9 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(),
     }
 
     private val connect = registerForActivityResult(StartService()) {
+        lifecycleScope.launch(Dispatchers.IO) {
+            EasyUtils.getIpInformation()
+        }
         if (it) {
             ToastUtils.toast(R.string.no_permissions)
         } else {
@@ -354,6 +358,10 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(),
      */
     private fun connectOrDisconnectEl(isBackgroundClosed: Boolean) {
         KLog.e("state", "连接或断开")
+        if (viewModel.whetherParsingIsIllegalIp()) {
+            viewModel.whetherTheBulletBoxCannotBeUsed(this@MainActivity)
+            return
+        }
         performConnectionOperations = if (state.canStop) {
             if (!isBackgroundClosed) {
                 viewModel.jumpConnectionResultsPage(false)
@@ -492,11 +500,6 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(),
                 return@launch
             }
             if (App.nativeAdRefreshEl) {
-                if (viewModel.afterDisconnectionServerData.el_ip == null) {
-                    setFastInformation(viewModel.currentServerData)
-                } else {
-                    setFastInformation(viewModel.afterDisconnectionServerData)
-                }
                 ElLoadVpnAd.getInstance().whetherToShowEl = false
                 if (ElLoadVpnAd.getInstance().appAdDataEl != null) {
                     KLog.d(logTagEl, "onResume------>1")
@@ -509,7 +512,6 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(),
                 }
             }
         }
-
     }
 
     override fun onPause() {
