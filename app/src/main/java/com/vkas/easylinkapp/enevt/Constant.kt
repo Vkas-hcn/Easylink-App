@@ -8,14 +8,6 @@ object Constant {
     // email
     const val MAILBOX_EL_ADDRESS="vkas@qq.com"
     const val RETURN_EL_CURRENT_PAGE ="returnElCurrentPage"
-    // 最近数据
-    const val RECENT_DATA="recentData"
-    // 插屏广告缓存
-    const val PLUG_EL_ADVERTISEMENT_CACHE="plugElAdvertisementCache"
-    // translation插屏广告展示
-    const val PLUG_EL_TRANSLATION_SHOW="plugElTranslationShow"
-    // home原生刷新
-    const val HOME_EL_NATIVE_REFRESH ="homeElNativeRefresh"
     // 广告数据
     const val ADVERTISING_EL_DATA="advertisingElData"
     // 广告包名
@@ -26,8 +18,6 @@ object Constant {
     const val CLICKS_EL_COUNT="clicksElCount"
     // 展示次数
     const val SHOW_EL_COUNT="showElCount"
-
-
     //日志tag
     const val logTagEl = "logTagEl"
     //开屏关闭跳转
@@ -46,30 +36,16 @@ object Constant {
     const val PROFILE_EL_DATA ="profileElData"
     // 最佳服务器
     const val PROFILE_EL_DATA_FAST ="profileElDataFast"
-    //
-
     // 是否已连接
     const val WHETHER_EL_CONNECTED="whetherElConnected"
-    // 当前IP
-    const val CURRENT_EL_IP="currentElIp"
-    // 是否最佳服务器
-    const val WHETHER_EL_BEST_SERVER="whetherElBestServer"
     // 当前服务器
     const val CURRENT_EL_SERVICE="currentElService"
-
     // connect插屏广告展示
     const val PLUG_EL_ADVERTISEMENT_SHOW="plugElAdvertisementShow"
-
-    // back插屏广告展示
-    const val PLUG_El_BACK_AD_SHOW="plugElBackAdShow"
-
     // Faster server
     const val FASTER_EL_SERVER= "Faster server"
-    // bestData
-    const val BEST_EL_SERVICE_DATA="bestElServiceData"
     //ip信息
     const val IP_INFORMATION= "ipInformation"
-
     // 已连接返回
     const val CONNECTED_EL_RETURN="connectedElReturn"
     // 未连接返回

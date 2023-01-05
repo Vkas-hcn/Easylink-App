@@ -92,8 +92,6 @@ object EasyUtils {
     private fun adSortingEl(elAdBean: ElAdBean): ElAdBean {
         val adBean: ElAdBean = ElAdBean()
         val elOpen = elAdBean.el_open.sortedWith(compareByDescending { it.el_weight })
-        val elHome = elAdBean.el_home.sortedWith(compareByDescending { it.el_weight })
-        val elTranslation = elAdBean.el_translation.sortedWith(compareByDescending { it.el_weight })
         val elBack = elAdBean.el_back.sortedWith(compareByDescending { it.el_weight })
 
         val elVpn = elAdBean.el_vpn.sortedWith(compareByDescending { it.el_weight })
@@ -102,8 +100,6 @@ object EasyUtils {
 
 
         adBean.el_open = elOpen.toMutableList()
-        adBean.el_home = elHome.toMutableList()
-        adBean.el_translation = elTranslation.toMutableList()
         adBean.el_back = elBack.toMutableList()
 
         adBean.el_vpn = elVpn.toMutableList()

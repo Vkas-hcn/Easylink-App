@@ -13,7 +13,7 @@
             type="com.vkas.easylinkapp.view.main.MainActivity.ElClick" />
 
         <variable
-            name="vpnAdPt"
+            name="vpnAdEl"
             type="Boolean"
             android:value="false" />
         <variable
@@ -184,7 +184,6 @@
                 </LinearLayout>
 
                 <LinearLayout
-                    android:visibility="gone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="vertical"
@@ -199,7 +198,7 @@
 
                     <FrameLayout
                         android:layout_width="match_parent"
-                        android:layout_height="268dp"
+                        android:layout_height="160dp"
                         android:layout_margin="16dp"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -207,17 +206,19 @@
 
                         <FrameLayout
                             android:id="@+id/el_ad_frame"
+                            android:background="@drawable/bg_home_ad"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
-                            android:visibility="@{vpnAdPt ? View.VISIBLE : View.GONE}" />
+                            android:visibility="@{vpnAdEl ? View.VISIBLE : View.GONE}" />
 
                         <ImageView
                             android:id="@+id/img_el_ad_frame"
                             android:layout_width="match_parent"
                             android:layout_height="match_parent"
                             android:layout_gravity="center"
+                            android:src="@drawable/ic_home_site"
                             android:scaleType="fitXY"
-                            android:visibility="@{vpnAdPt ? View.GONE : View.VISIBLE}" />
+                            android:visibility="@{vpnAdEl ? View.GONE : View.VISIBLE}" />
                     </FrameLayout>
                 </LinearLayout>
 

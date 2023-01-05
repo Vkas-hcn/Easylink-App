@@ -121,7 +121,6 @@ class App : Application(), LifecycleObserver {
         whetherBackgroundEl = false
         val intent = Intent(top_activity_pt, StartActivity::class.java)
         intent.putExtra(Constant.RETURN_EL_CURRENT_PAGE, true)
-        MmkvUtils.set(Constant.RETURN_EL_CURRENT_PAGE,true)
         top_activity_pt?.startActivity(intent)
     }
     fun setActivityLifecycleEl(application: Application) {

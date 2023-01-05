@@ -99,25 +99,25 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="268dp"
-            android:layout_margin="14dp"
-            android:visibility="gone"
-            android:background="@color/white"
+            android:layout_height="330dp"
+            android:layout_margin="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent">
 
             <FrameLayout
-                android:id="@+id/pt_ad_frame"
+                android:id="@+id/el_ad_frame"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
+                android:background="@drawable/bg_result_ad"
                 android:visibility="@{resultAdEl ? View.VISIBLE : View.GONE}" />
 
             <ImageView
-                android:id="@+id/img_pt_ad_frame"
+                android:id="@+id/img_el_ad_frame"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_gravity="center"
+                android:src="@mipmap/ic_result_site"
                 android:scaleType="fitXY"
                 android:visibility="@{resultAdEl ? View.GONE : View.VISIBLE}" />
         </FrameLayout>

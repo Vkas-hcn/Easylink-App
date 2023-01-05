@@ -29,6 +29,7 @@ import com.vkas.easylinkapp.app.App.Companion.mmkvEl
 import com.vkas.easylinkapp.base.BaseActivity
 import com.vkas.easylinkapp.bean.ElVpnBean
 import com.vkas.easylinkapp.databinding.ActivityMainBinding
+import com.vkas.easylinkapp.elad.ElLoadBackAd
 import com.vkas.easylinkapp.elad.ElLoadConnectAd
 import com.vkas.easylinkapp.elad.ElLoadResultAd
 import com.vkas.easylinkapp.elad.ElLoadVpnAd
@@ -140,7 +141,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(),
 
     override fun initData() {
         super.initData()
-        if(viewModel.whetherParsingIsIllegalIp()){
+        if (viewModel.whetherParsingIsIllegalIp()) {
             viewModel.whetherTheBulletBoxCannotBeUsed(this@MainActivity)
             return
         }
@@ -157,21 +158,21 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(),
             )
             setFastInformation(currentServerData)
         }
-//        ElLoadVpnAd.getInstance().whetherToShowEl = false
+        ElLoadVpnAd.getInstance().whetherToShowEl = false
         initHomeAd()
     }
 
     private fun initHomeAd() {
-//        jobNativeAdsEl = lifecycleScope.launch {
-//            while (isActive) {
-//                ElLoadVpnAd.getInstance().setDisplayHomeNativeAdEl(this@MainActivity, binding)
-//                if (ElLoadVpnAd.getInstance().whetherToShowEl) {
-//                    jobNativeAdsEl?.cancel()
-//                    jobNativeAdsEl = null
-//                }
-//                delay(1000L)
-//            }
-//        }
+        jobNativeAdsEl = lifecycleScope.launch {
+            while (isActive) {
+                ElLoadVpnAd.getInstance().setDisplayHomeNativeAdEl(this@MainActivity, binding)
+                if (ElLoadVpnAd.getInstance().whetherToShowEl) {
+                    jobNativeAdsEl?.cancel()
+                    jobNativeAdsEl = null
+                }
+                delay(1000L)
+            }
+        }
     }
 
     override fun initViewObservable() {
@@ -222,14 +223,17 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(),
                 jumpToServerList()
             }
         }
-        fun clickMain(){
+
+        fun clickMain() {
             if (binding.sidebarShowsEl == true) {
                 binding.sidebarShowsEl = false
             }
         }
-        fun clickMainMenu(){
+
+        fun clickMainMenu() {
 
         }
+
         fun toContactUs() {
             val uri = Uri.parse("mailto:${Constant.MAILBOX_EL_ADDRESS}")
             val intent = Intent(Intent.ACTION_SENDTO, uri)
@@ -270,6 +274,7 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(),
             } else {
                 bundle.putBoolean(Constant.WHETHER_EL_CONNECTED, false)
             }
+            ElLoadBackAd.getInstance().advertisementLoadingEl(this@MainActivity)
             val serviceData = mmkvEl.decodeString("currentServerData", "").toString()
             bundle.putString(Constant.CURRENT_EL_SERVICE, serviceData)
             startActivity(VpnList::class.java, bundle)
@@ -308,39 +313,38 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(),
     private fun startVpn() {
         binding.vpnState = 1
         changeOfVpnStatus()
-//        App.isAppOpenSameDayEl()
-//        if (isThresholdReached()) {
-//            KLog.d(logTagEl, "广告达到上线")
-//            connectOrDisconnectEl(false)
-//            return
-//        }
-//        ElLoadConnectAd.getInstance().advertisementLoadingEl(this)
-//        ElLoadResultAd.getInstance().advertisementLoadingEl(this)
-
         jobStartEl = lifecycleScope.launch {
-            delay(1000L)
-            connectOrDisconnectEl(false)
-//            try {
-//                withTimeout(10000L) {
-//                    delay(2000L)
-//                    KLog.e(logTagEl, "jobStartEl?.isActive=${jobStartEl?.isActive}")
-//                    while (jobStartEl?.isActive == true) {
-//                        val showState =
-//                            ElLoadConnectAd.getInstance()
-//                                .displayConnectAdvertisementEl(this@MainActivity)
-//                        if (showState) {
-//                            jobStartEl?.cancel()
-//                            jobStartEl = null
-//                        }
-//                        delay(1000L)
-//                    }
-//                }
-//            } catch (e: TimeoutCancellationException) {
-//                KLog.d(logTagEl, "connect---插屏超时")
-//                if (jobStartEl != null) {
-//                    connectOrDisconnectEl(false)
-//                }
-//            }
+            App.isAppOpenSameDayEl()
+            if (isThresholdReached()) {
+                KLog.d(logTagEl, "广告达到上线")
+                delay(1500)
+                connectOrDisconnectEl(false)
+                return@launch
+            }
+            ElLoadConnectAd.getInstance().advertisementLoadingEl(this@MainActivity)
+            ElLoadResultAd.getInstance().advertisementLoadingEl(this@MainActivity)
+
+            try {
+                withTimeout(10000L) {
+                    delay(1500L)
+                    KLog.e(logTagEl, "jobStartEl?.isActive=${jobStartEl?.isActive}")
+                    while (jobStartEl?.isActive == true) {
+                        val showState =
+                            ElLoadConnectAd.getInstance()
+                                .displayConnectAdvertisementEl(this@MainActivity)
+                        if (showState) {
+                            jobStartEl?.cancel()
+                            jobStartEl = null
+                        }
+                        delay(1000L)
+                    }
+                }
+            } catch (e: TimeoutCancellationException) {
+                KLog.d(logTagEl, "connect---插屏超时")
+                if (jobStartEl != null) {
+                    connectOrDisconnectEl(false)
+                }
+            }
         }
     }
 
@@ -350,18 +354,18 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(),
      */
     private fun connectOrDisconnectEl(isBackgroundClosed: Boolean) {
         KLog.e("state", "连接或断开")
-        if (state.canStop) {
+        performConnectionOperations = if (state.canStop) {
             if (!isBackgroundClosed) {
                 viewModel.jumpConnectionResultsPage(false)
             }
             Core.stopService()
-            performConnectionOperations = false
+            false
         } else {
             if (!isBackgroundClosed) {
                 viewModel.jumpConnectionResultsPage(true)
             }
             Core.startService()
-            performConnectionOperations = true
+            true
         }
     }
 
@@ -487,23 +491,23 @@ class MainActivity : BaseActivity<ActivityMainBinding, MainViewModel>(),
             if (lifecycle.currentState != Lifecycle.State.RESUMED) {
                 return@launch
             }
-//            if (App.nativeAdRefreshEl) {
-//                if (viewModel.afterDisconnectionServerData.el_ip == null) {
-//                    setFastInformation(viewModel.currentServerData)
-//                } else {
-//                    setFastInformation(viewModel.afterDisconnectionServerData)
-//                }
-//                ElLoadVpnAd.getInstance().whetherToShowEl = false
-//                if (ElLoadVpnAd.getInstance().appAdDataEl != null) {
-//                    KLog.d(logTagEl, "onResume------>1")
-//                    ElLoadVpnAd.getInstance().setDisplayHomeNativeAdEl(this@VpnActivity, binding)
-//                } else {
-//                    binding.vpnAdEl = false
-//                    KLog.d(logTagEl, "onResume------>2")
-//                    ElLoadVpnAd.getInstance().advertisementLoadingEl(this@VpnActivity)
-//                    initHomeAd()
-//                }
-//            }
+            if (App.nativeAdRefreshEl) {
+                if (viewModel.afterDisconnectionServerData.el_ip == null) {
+                    setFastInformation(viewModel.currentServerData)
+                } else {
+                    setFastInformation(viewModel.afterDisconnectionServerData)
+                }
+                ElLoadVpnAd.getInstance().whetherToShowEl = false
+                if (ElLoadVpnAd.getInstance().appAdDataEl != null) {
+                    KLog.d(logTagEl, "onResume------>1")
+                    ElLoadVpnAd.getInstance().setDisplayHomeNativeAdEl(this@MainActivity, binding)
+                } else {
+                    binding.vpnAdEl = false
+                    KLog.d(logTagEl, "onResume------>2")
+                    ElLoadVpnAd.getInstance().advertisementLoadingEl(this@MainActivity)
+                    initHomeAd()
+                }
+            }
         }
 
     }

@@ -16,6 +16,7 @@ import com.vkas.easylinkapp.base.BaseViewModel
 import com.vkas.easylinkapp.bean.ElVpnBean
 import com.vkas.easylinkapp.databinding.ActivityResultElBinding
 import com.vkas.easylinkapp.elad.ElLoadResultAd
+import com.vkas.easylinkapp.elad.ElLoadVpnAd
 import com.vkas.easylinkapp.enevt.Constant
 import com.vkas.easylinkapp.utils.EasyUtils
 import com.xuexiang.xutil.net.JsonUtil
@@ -77,7 +78,7 @@ class ResultElActivity : BaseActivity<ActivityResultElBinding, BaseViewModel>() 
         }
         binding.imgCountry.setImageResource(EasyUtils.getFlagThroughCountryEl(currentServerBeanEl.el_country.toString()))
         binding.txtCountry.text = currentServerBeanEl.el_country.toString()
-//        ElLoadResultAd.getInstance().whetherToShowEl =false
+        ElLoadResultAd.getInstance().whetherToShowEl =false
         initResultAds()
     }
 
@@ -86,33 +87,33 @@ class ResultElActivity : BaseActivity<ActivityResultElBinding, BaseViewModel>() 
     }
 
     private fun initResultAds() {
-//        jobResultEl= lifecycleScope.launch {
-//            while (isActive) {
-//                ElLoadResultAd.getInstance().setDisplayResultNativeAd(this@ResultElActivity,binding)
-//                if (ElLoadHomeAd.getInstance().whetherToShowEl) {
-//                    jobResultEl?.cancel()
-//                    jobResultEl = null
-//                }
-//                delay(1000L)
-//            }
-//        }
+        jobResultEl= lifecycleScope.launch {
+            while (isActive) {
+                ElLoadResultAd.getInstance().setDisplayResultNativeAd(this@ResultElActivity,binding)
+                if (ElLoadVpnAd.getInstance().whetherToShowEl) {
+                    jobResultEl?.cancel()
+                    jobResultEl = null
+                }
+                delay(1000L)
+            }
+        }
     }
 
     override fun onResume() {
         super.onResume()
-//        lifecycleScope.launch {
-//            delay(300)
-//            if(lifecycle.currentState != Lifecycle.State.RESUMED){return@launch}
-//            if(App.nativeAdRefreshEl){
-//                ElLoadResultAd.getInstance().whetherToShowEl =false
-//                if(ElLoadResultAd.getInstance().appAdDataEl !=null){
-//                    ElLoadResultAd.getInstance().setDisplayResultNativeAd(this@ResultElActivity,binding)
-//                }else{
-//                    ElLoadResultAd.getInstance().advertisementLoadingEl(this@ResultElActivity)
-//                    initResultAds()
-//                }
-//            }
-//
-//        }
+        lifecycleScope.launch {
+            delay(300)
+            if(lifecycle.currentState != Lifecycle.State.RESUMED){return@launch}
+            if(App.nativeAdRefreshEl){
+                ElLoadResultAd.getInstance().whetherToShowEl =false
+                if(ElLoadResultAd.getInstance().appAdDataEl !=null){
+                    ElLoadResultAd.getInstance().setDisplayResultNativeAd(this@ResultElActivity,binding)
+                }else{
+                    ElLoadResultAd.getInstance().advertisementLoadingEl(this@ResultElActivity)
+                    initResultAds()
+                }
+            }
+
+        }
     }
 }

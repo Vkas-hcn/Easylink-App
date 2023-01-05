@@ -3,8 +3,13 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="app/src/main/res/drawable/bg_home_ad.xml" value="0.2421875" />
+        <entry key="app/src/main/res/drawable/bg_home_ad_button.xml" value="0.2421875" />
         <entry key="app/src/main/res/drawable/bg_item.xml" value="0.2421875" />
         <entry key="app/src/main/res/drawable/bg_item_check.xml" value="0.2421875" />
+        <entry key="app/src/main/res/drawable/bg_result_ad.xml" value="0.2421875" />
+        <entry key="app/src/main/res/drawable/bg_result_ad_button.xml" value="0.2421875" />
+        <entry key="app/src/main/res/drawable/ic_connect.xml" value="0.2421875" />
         <entry key="app/src/main/res/drawable/ic_el_logo.xml" value="0.24114583333333334" />
         <entry key="app/src/main/res/drawable/ic_fast.xml" value="0.2421875" />
         <entry key="app/src/main/res/drawable/ic_france.xml" value="0.2421875" />
@@ -17,8 +22,12 @@
         <entry key="app/src/main/res/layout/activity_result_el.xml" value="0.165" />
         <entry key="app/src/main/res/layout/activity_start.xml" value="0.165" />
         <entry key="app/src/main/res/layout/activity_web_el.xml" value="0.22604166666666667" />
+        <entry key="app/src/main/res/layout/item_ad_el.xml" value="0.22604166666666667" />
         <entry key="app/src/main/res/layout/item_vpn.xml" value="0.22604166666666667" />
+        <entry key="app/src/main/res/layout/layout_back_native_el.xml" value="0.22604166666666667" />
+        <entry key="app/src/main/res/layout/layout_main_native.xml" value="0.22604166666666667" />
         <entry key="app/src/main/res/layout/layout_main_navigation.xml" value="0.25" />
+        <entry key="app/src/main/res/layout/layout_result_native.xml" value="0.22604166666666667" />
         <entry key="app/src/main/res/layout/layout_toolbar_el.xml" value="0.22604166666666667" />
         <entry key="shadowsocks/src/main/res/drawable/ic_france.xml" value="0.2421875" />
       </map>

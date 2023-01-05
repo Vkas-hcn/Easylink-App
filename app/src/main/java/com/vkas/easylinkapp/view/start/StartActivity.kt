@@ -15,7 +15,7 @@ import com.vkas.easylinkapp.R
 import com.vkas.easylinkapp.app.App
 import com.vkas.easylinkapp.base.BaseActivity
 import com.vkas.easylinkapp.databinding.ActivityStartBinding
-import com.vkas.easylinkapp.elad.ElLoadOpenAd
+import com.vkas.easylinkapp.elad.*
 import com.vkas.easylinkapp.enevt.Constant
 import com.vkas.easylinkapp.enevt.Constant.logTagEl
 import com.vkas.easylinkapp.utils.EasyUtils
@@ -24,6 +24,7 @@ import com.vkas.easylinkapp.utils.KLog
 import com.vkas.easylinkapp.utils.MmkvUtils
 import com.vkas.easylinkapp.view.main.MainActivity
 import com.xuexiang.xui.widget.progress.HorizontalProgressView
+import com.xuexiang.xutil.resource.ResourceUtils
 import kotlinx.coroutines.*
 
 class StartActivity : BaseActivity<ActivityStartBinding, StartViewModel>(),
@@ -42,6 +43,11 @@ class StartActivity : BaseActivity<ActivityStartBinding, StartViewModel>(),
     override fun initVariableId(): Int {
         return BR._all
     }
+    override fun initParam() {
+        super.initParam()
+        isCurrentPage = intent.getBooleanExtra(Constant.RETURN_EL_CURRENT_PAGE, false)
+
+    }
     override fun initToolbar() {
         super.initToolbar()
     }
@@ -49,6 +55,7 @@ class StartActivity : BaseActivity<ActivityStartBinding, StartViewModel>(),
     override fun initData() {
         super.initData()
         binding.pbStartEl.setProgressViewUpdateListener(this)
+        binding.pbStartEl.setProgressDuration(8000)
         binding.pbStartEl.startProgressAnimation()
         liveEventBusEl()
         lifecycleScope.launch(Dispatchers.IO) {
@@ -71,15 +78,9 @@ class StartActivity : BaseActivity<ActivityStartBinding, StartViewModel>(),
     private fun getFirebaseDataEl() {
         if (BuildConfig.DEBUG) {
             preloadedAdvertisement()
-//            MmkvUtils.set(Constant.PIXEL_SET, "4")
-////
-//            MmkvUtils.set(Constant.PIXEL_SET_P, "1")
-////
-//            MmkvUtils.set(Constant.PIXEL_ABT, "100")
-
 //            lifecycleScope.launch {
-//                delay(500)
-//                MmkvUtils.set(Constant.ADVERTISING_EL_DATA, ResourceUtils.readStringFromAssert("ptAdDataFireBase.json"))
+//                delay(1500)
+//                MmkvUtils.set(Constant.ADVERTISING_EL_DATA, ResourceUtils.readStringFromAssert("elAdDataFireBase.json"))
 //            }
             return
         } else {
@@ -126,31 +127,27 @@ class StartActivity : BaseActivity<ActivityStartBinding, StartViewModel>(),
         finish()
 
     }
-//    /**
-//     * 加载广告
-//     */
-//    private fun loadAdvertisement() {
-//        //开屏
-//        ElLoadOpenAd.getInstance().adIndexEl = 0
-//        ElLoadOpenAd.getInstance().advertisementLoadingEl(this)
-//        rotationDisplayOpeningAdEl()
-//
-//        ElLoadHomeAd.getInstance().adIndexEl = 0
-//        ElLoadHomeAd.getInstance().advertisementLoadingEl(this)
-//
-//        ElLoadTranslationAd.getInstance().adIndexEl = 0
-//        ElLoadTranslationAd.getInstance().advertisementLoadingEl(this)
-//
-//        ElLoadBackAd.getInstance().adIndexEl = 0
-//        ElLoadBackAd.getInstance().advertisementLoadingEl(this)
-//
-//        ElLoadVpnAd.getInstance().adIndexEl = 0
-//        ElLoadVpnAd.getInstance().advertisementLoadingEl(this)
-//        ElLoadResultAd.getInstance().adIndexEl = 0
-//        ElLoadResultAd.getInstance().advertisementLoadingEl(this)
-//        ElLoadConnectAd.getInstance().adIndexEl = 0
-//        ElLoadConnectAd.getInstance().advertisementLoadingEl(this)
-//    }
+    /**
+     * 加载广告
+     */
+    private fun loadAdvertisement() {
+        // 开屏
+        ElLoadOpenAd.getInstance().adIndexEl = 0
+        ElLoadOpenAd.getInstance().advertisementLoadingEl(this)
+        rotationDisplayOpeningAdEl()
+        // 首页原生
+        ElLoadVpnAd.getInstance().adIndexEl = 0
+        ElLoadVpnAd.getInstance().advertisementLoadingEl(this)
+        // 结果页原生
+        ElLoadResultAd.getInstance().adIndexEl = 0
+        ElLoadResultAd.getInstance().advertisementLoadingEl(this)
+        // 连接插屏
+        ElLoadConnectAd.getInstance().adIndexEl = 0
+        ElLoadConnectAd.getInstance().advertisementLoadingEl(this)
+        // 服务器页原生
+        ElLoadBackAd.getInstance().adIndexEl = 0
+        ElLoadBackAd.getInstance().advertisementLoadingEl(this)
+    }
     /**
      * 轮训展示开屏广告
      */
@@ -179,16 +176,16 @@ class StartActivity : BaseActivity<ActivityStartBinding, StartViewModel>(),
      * 预加载广告
      */
     private fun preloadedAdvertisement() {
-//        App.isAppOpenSameDayEl()
-//        if (isThresholdReached()) {
-//            KLog.d(logTagEl, "广告达到上线")
+        App.isAppOpenSameDayEl()
+        if (isThresholdReached()) {
+            KLog.d(logTagEl, "广告达到上线")
             lifecycleScope.launch {
                 delay(2000L)
                 liveJumpHomePage.postValue(true)
             }
-//        } else {
-//            loadAdvertisement()
-//        }
+        } else {
+            loadAdvertisement()
+        }
     }
     override fun onHorizontalProgressStart(view: View?) {
     }

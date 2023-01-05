@@ -4,8 +4,6 @@ import androidx.annotation.Keep
 
 data class ElAdBean(
     var el_open: MutableList<ElDetailBean> = ArrayList(),
-    var el_home: MutableList<ElDetailBean> = ArrayList(),
-    var el_translation: MutableList<ElDetailBean> = ArrayList(),
     var el_back: MutableList<ElDetailBean> = ArrayList(),
     var el_vpn: MutableList<ElDetailBean> = ArrayList(),
     var el_result: MutableList<ElDetailBean> = ArrayList(),

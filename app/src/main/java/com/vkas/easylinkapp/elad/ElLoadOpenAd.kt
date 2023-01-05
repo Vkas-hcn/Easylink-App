@@ -26,6 +26,7 @@ import com.xuexiang.xutil.net.JsonUtil
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
+
 class ElLoadOpenAd {
     companion object {
         fun getInstance() = InstanceHelper.openLoadEl

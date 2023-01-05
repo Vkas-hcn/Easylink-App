@@ -1,19 +1,18 @@
 package com.vkas.easylinkapp.elad
 
 import android.content.Context
+import android.view.View
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.lifecycleScope
 import com.google.android.gms.ads.*
-import com.google.android.gms.ads.interstitial.InterstitialAd
-import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.google.android.gms.ads.nativead.NativeAdView
-import com.jeremyliao.liveeventbus.LiveEventBus
 import com.vkas.easylinkapp.app.App
 import com.vkas.easylinkapp.bean.ElAdBean
-import com.vkas.easylinkapp.enevt.Constant
+import com.vkas.easylinkapp.databinding.ActivityResultElBinding
 import com.vkas.easylinkapp.enevt.Constant.logTagEl
 import com.vkas.easylinkapp.utils.EasyUtils
 import com.vkas.easylinkapp.utils.EasyUtils.getAdServerDataEl
@@ -21,8 +20,7 @@ import com.vkas.easylinkapp.utils.EasyUtils.recordNumberOfAdClickEl
 import com.vkas.easylinkapp.utils.EasyUtils.recordNumberOfAdDisplaysEl
 import com.vkas.easylinkapp.utils.EasyUtils.takeSortedAdIDEl
 import com.vkas.easylinkapp.utils.KLog
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import com.vkas.easylinkapp.R
 import java.util.*
 class ElLoadResultAd {
     companion object {
@@ -146,78 +144,78 @@ class ElLoadResultAd {
         }).build().loadAd(AdRequest.Builder().build())
     }
 
-//    /**
-//     * 设置展示home原生广告
-//     */
-//    fun setDisplayResultNativeAd(activity: AppCompatActivity, binding: ActivityResultElBinding) {
-//        activity.runOnUiThread {
-//            appAdDataEl.let {
-//                if (it != null && !whetherToShowEl && activity.lifecycle.currentState == Lifecycle.State.RESUMED) {
-//                    val activityDestroyed: Boolean = activity.isDestroyed
-//                    if (activityDestroyed || activity.isFinishing || activity.isChangingConfigurations) {
-//                        it.destroy()
-//                        return@let
-//                    }
-//                    val adView = activity.layoutInflater
-//                        .inflate(R.layout.layout_result_native, null) as NativeAdView
-//                    // 对应原生组件
-//                    setResultNativeComponent(it, adView)
-//                    binding.elAdFrame.removeAllViews()
-//                    binding.elAdFrame.addView(adView)
-//                    binding.resultAdEl = true
-//                    recordNumberOfAdDisplaysEl()
-//                    whetherToShowEl = true
-//                    App.nativeAdRefreshEl = false
-//                    appAdDataEl = null
-//                    KLog.d(logTagEl, "result--原生广告--展示")
-//                    //重新缓存
-//                    advertisementLoadingEl(activity)
-//                }
-//            }
-//
-//        }
-//    }
-//
-//    private fun setResultNativeComponent(nativeAd: NativeAd, adView: NativeAdView) {
-//        adView.mediaView = adView.findViewById(R.id.ad_media)
-//        // Set other ad assets.
-//        adView.headlineView = adView.findViewById(R.id.ad_headline)
-//        adView.bodyView = adView.findViewById(R.id.ad_body)
-//        adView.callToActionView = adView.findViewById(R.id.ad_call_to_action)
-//        adView.iconView = adView.findViewById(R.id.ad_app_icon)
-//        (adView.headlineView as TextView).text = nativeAd.headline
-//        nativeAd.mediaContent?.let {
-//            adView.mediaView?.apply { setImageScaleType(ImageView.ScaleType.CENTER_CROP) }
-//                ?.setMediaContent(it)
-//        }
-//        // These assets aren't guaranteed to be in every UnifiedNativeAd, so it's important to
-//        // check before trying to display them.
-//        if (nativeAd.body == null) {
-//            adView.bodyView?.visibility = View.INVISIBLE
-//        } else {
-//            adView.bodyView?.visibility = View.VISIBLE
-//            (adView.bodyView as TextView).text = nativeAd.body
-//        }
-//
-//        if (nativeAd.callToAction == null) {
-//            adView.callToActionView?.visibility = View.INVISIBLE
-//        } else {
-//            adView.callToActionView?.visibility = View.VISIBLE
-//            (adView.callToActionView as TextView).text = nativeAd.callToAction
-//        }
-//
-//        if (nativeAd.icon == null) {
-//            adView.iconView?.visibility = View.GONE
-//        } else {
-//            (adView.iconView as ImageView).setImageDrawable(
-//                nativeAd.icon?.drawable
-//            )
-//            adView.iconView?.visibility = View.VISIBLE
-//        }
-//
-//        // This method tells the Google Mobile Ads SDK that you have finished populating your
-//        // native ad view with this native ad.
-//        adView.setNativeAd(nativeAd)
-//    }
+    /**
+     * 设置展示home原生广告
+     */
+    fun setDisplayResultNativeAd(activity: AppCompatActivity, binding: ActivityResultElBinding) {
+        activity.runOnUiThread {
+            appAdDataEl.let {
+                if (it != null && !whetherToShowEl && activity.lifecycle.currentState == Lifecycle.State.RESUMED) {
+                    val activityDestroyed: Boolean = activity.isDestroyed
+                    if (activityDestroyed || activity.isFinishing || activity.isChangingConfigurations) {
+                        it.destroy()
+                        return@let
+                    }
+                    val adView = activity.layoutInflater
+                        .inflate(R.layout.layout_result_native, null) as NativeAdView
+                    // 对应原生组件
+                    setResultNativeComponent(it, adView)
+                    binding.elAdFrame.removeAllViews()
+                    binding.elAdFrame.addView(adView)
+                    binding.resultAdEl = true
+                    recordNumberOfAdDisplaysEl()
+                    whetherToShowEl = true
+                    App.nativeAdRefreshEl = false
+                    appAdDataEl = null
+                    KLog.d(logTagEl, "result--原生广告--展示")
+                    //重新缓存
+                    advertisementLoadingEl(activity)
+                }
+            }
+
+        }
+    }
+
+    private fun setResultNativeComponent(nativeAd: NativeAd, adView: NativeAdView) {
+        adView.mediaView = adView.findViewById(R.id.ad_media)
+        // Set other ad assets.
+        adView.headlineView = adView.findViewById(R.id.ad_headline)
+        adView.bodyView = adView.findViewById(R.id.ad_body)
+        adView.callToActionView = adView.findViewById(R.id.ad_call_to_action)
+        adView.iconView = adView.findViewById(R.id.ad_app_icon)
+        (adView.headlineView as TextView).text = nativeAd.headline
+        nativeAd.mediaContent?.let {
+            adView.mediaView?.apply { setImageScaleType(ImageView.ScaleType.CENTER_CROP) }
+                ?.setMediaContent(it)
+        }
+        // These assets aren't guaranteed to be in every UnifiedNativeAd, so it's important to
+        // check before trying to display them.
+        if (nativeAd.body == null) {
+            adView.bodyView?.visibility = View.INVISIBLE
+        } else {
+            adView.bodyView?.visibility = View.VISIBLE
+            (adView.bodyView as TextView).text = nativeAd.body
+        }
+
+        if (nativeAd.callToAction == null) {
+            adView.callToActionView?.visibility = View.INVISIBLE
+        } else {
+            adView.callToActionView?.visibility = View.VISIBLE
+            (adView.callToActionView as TextView).text = nativeAd.callToAction
+        }
+
+        if (nativeAd.icon == null) {
+            adView.iconView?.visibility = View.GONE
+        } else {
+            (adView.iconView as ImageView).setImageDrawable(
+                nativeAd.icon?.drawable
+            )
+            adView.iconView?.visibility = View.VISIBLE
+        }
+
+        // This method tells the Google Mobile Ads SDK that you have finished populating your
+        // native ad view with this native ad.
+        adView.setNativeAd(nativeAd)
+    }
 
 }

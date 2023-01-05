@@ -1,22 +1,30 @@
 package com.vkas.easylinkapp.view.vpnlist
 
+import android.annotation.SuppressLint
 import android.app.AlertDialog
 import android.content.DialogInterface
 import android.graphics.Color
 import android.os.Bundle
+import android.view.KeyEvent
 import android.view.View
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.google.gson.reflect.TypeToken
 import com.jeremyliao.liveeventbus.LiveEventBus
 import com.vkas.easylinkapp.BR
 import com.vkas.easylinkapp.R
+import com.vkas.easylinkapp.app.App
 import com.vkas.easylinkapp.base.BaseActivity
 import com.vkas.easylinkapp.bean.ElVpnBean
 import com.vkas.easylinkapp.databinding.ActivityListElBinding
+import com.vkas.easylinkapp.elad.ElLoadBackAd
 import com.vkas.easylinkapp.enevt.Constant
 import com.vkas.easylinkapp.utils.KLog
 import com.xuexiang.xutil.net.JsonUtil
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 class VpnList : BaseActivity<ActivityListElBinding, VpnListViewModel>() {
     private lateinit var selectAdapter: VpnListAdapter
@@ -57,7 +65,7 @@ class VpnList : BaseActivity<ActivityListElBinding, VpnListViewModel>() {
         binding.selectTitle.tvTitle.text = getString(R.string.locations)
         binding.selectTitle.tvRight.visibility = View.GONE
         binding.selectTitle.imgBack.setOnClickListener {
-            finish()
+            returnToHomePage()
         }
     }
 
@@ -65,6 +73,7 @@ class VpnList : BaseActivity<ActivityListElBinding, VpnListViewModel>() {
         super.initData()
         initSelectRecyclerView()
         viewModel.getServerListData()
+        ElLoadBackAd.getInstance().whetherToShowEl = false
     }
 
     override fun initViewObservable() {
@@ -79,10 +88,25 @@ class VpnList : BaseActivity<ActivityListElBinding, VpnListViewModel>() {
     }
 
     private fun initSelectRecyclerView() {
-        selectAdapter = VpnListAdapter(elServiceBeanList)
+        selectAdapter = VpnListAdapter(this, elServiceBeanList)
         val layoutManager =
             GridLayoutManager(this, 2, GridLayoutManager.VERTICAL, false)
-
+        layoutManager.spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                if (elServiceBeanList.size <= 4) {
+                    return if (position == elServiceBeanList.size - 1) {
+                        2
+                    } else {
+                        1
+                    }
+                } else {
+                    if (position == 4) {
+                        return 2
+                    }
+                }
+                return 1
+            }
+        }
         binding.recyclerSelect.layoutManager = layoutManager
         binding.recyclerSelect.adapter = selectAdapter
         selectAdapter.setOnItemClickListener { _, _, pos ->
@@ -91,6 +115,7 @@ class VpnList : BaseActivity<ActivityListElBinding, VpnListViewModel>() {
             }
         }
     }
+
 
     /**
      * 选中服务器
@@ -127,6 +152,13 @@ class VpnList : BaseActivity<ActivityListElBinding, VpnListViewModel>() {
                     elServiceBeanList[index].el_ip == checkSkServiceBeanClick.el_ip
                 elServiceBeanList[0].el_check = false
             }
+        }
+        adBean = ElVpnBean()
+        adBean.isAd = true
+        if (elServiceBeanList.size >= 4) {
+            elServiceBeanList.add(4, adBean)
+        } else {
+            elServiceBeanList.add(adBean)
         }
         KLog.e("TAG", "elServiceBeanList=${JsonUtil.toJson(elServiceBeanList)}")
         selectAdapter.setList(elServiceBeanList)
@@ -175,5 +207,27 @@ class VpnList : BaseActivity<ActivityListElBinding, VpnListViewModel>() {
         dialog.getButton(AlertDialog.BUTTON_POSITIVE)?.setTextColor(Color.BLACK)
         dialog.getButton(DialogInterface.BUTTON_NEGATIVE)?.setTextColor(Color.BLACK)
     }
-
+    @SuppressLint("NotifyDataSetChanged")
+    override fun onResume() {
+        super.onResume()
+        lifecycleScope.launch {
+            delay(300)
+            if(lifecycle.currentState != Lifecycle.State.RESUMED){return@launch}
+            if (App.nativeAdRefreshEl) {
+                ElLoadBackAd.getInstance().whetherToShowEl = false
+                if (ElLoadBackAd.getInstance().appAdDataEl != null) {
+                    selectAdapter.notifyDataSetChanged()
+                } else {
+                    ElLoadBackAd.getInstance().advertisementLoadingEl(this@VpnList)
+                    selectAdapter.notifyDataSetChanged()
+                }
+            }
+        }
+    }
+    override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_BACK) {
+            returnToHomePage()
+        }
+        return true
+    }
 }

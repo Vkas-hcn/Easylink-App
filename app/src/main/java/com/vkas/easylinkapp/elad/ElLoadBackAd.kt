@@ -1,41 +1,40 @@
 package com.vkas.easylinkapp.elad
 
+import com.google.android.gms.ads.nativead.NativeAd
 import android.content.Context
 import android.view.View
+import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.Lifecycle
 import com.google.android.gms.ads.*
-import com.google.android.gms.ads.nativead.NativeAd
 import com.google.android.gms.ads.nativead.NativeAdOptions
 import com.google.android.gms.ads.nativead.NativeAdView
 import com.vkas.easylinkapp.app.App
-import com.vkas.easylinkapp.bean.ElAdBean
-import com.vkas.easylinkapp.databinding.ActivityMainBinding
 import com.vkas.easylinkapp.enevt.Constant.logTagEl
 import com.vkas.easylinkapp.utils.EasyUtils
-import com.vkas.easylinkapp.utils.EasyUtils.getAdServerDataEl
-import com.vkas.easylinkapp.utils.EasyUtils.recordNumberOfAdClickEl
-import com.vkas.easylinkapp.utils.EasyUtils.takeSortedAdIDEl
+import com.vkas.easylinkapp.utils.EasyUtils.recordNumberOfAdDisplaysEl
 import com.vkas.easylinkapp.utils.KLog
 import java.util.*
 import com.vkas.easylinkapp.R
-import com.vkas.easylinkapp.utils.EasyUtils.recordNumberOfAdDisplaysEl
+import com.vkas.easylinkapp.bean.ElAdBean
+import com.vkas.easylinkapp.utils.EasyUtils.getAdServerDataEl
+import com.vkas.easylinkapp.utils.EasyUtils.recordNumberOfAdClickEl
+import com.vkas.easylinkapp.utils.EasyUtils.takeSortedAdIDEl
 import com.vkas.easylinkapp.utils.RoundCornerOutlineProvider
 
-class ElLoadVpnAd {
+class ElLoadBackAd {
     companion object {
         fun getInstance() = InstanceHelper.openLoadEl
     }
 
     object InstanceHelper {
-        val openLoadEl = ElLoadVpnAd()
+        val openLoadEl = ElLoadBackAd()
     }
     var appAdDataEl: NativeAd? = null
 
     // 是否正在加载中
-    var isLoadingEl = false
+    private var isLoadingEl = false
 
     //加载时间
     private var loadTimeEl: Long = Date().time
@@ -56,20 +55,21 @@ class ElLoadVpnAd {
             KLog.d(logTagEl, "广告达到上线")
             return
         }
-        KLog.d(logTagEl, "vpn--isLoading=${isLoadingEl}")
+        KLog.d(logTagEl, "isLoading=${isLoadingEl}")
 
         if (isLoadingEl) {
-            KLog.d(logTagEl, "vpn--广告加载中，不能再次加载")
+            KLog.d(logTagEl, "广告加载中，不能再次加载")
             return
         }
+
         if(appAdDataEl == null){
             isLoadingEl = true
-            loadHomeAdvertisementEl(context,getAdServerDataEl())
+            loadBackAdvertisementEl(context,getAdServerDataEl())
         }
         if (appAdDataEl != null && !whetherAdExceedsOneHour(loadTimeEl)) {
             isLoadingEl = true
             appAdDataEl =null
-            loadHomeAdvertisementEl(context,getAdServerDataEl())
+            loadBackAdvertisementEl(context,getAdServerDataEl())
         }
     }
 
@@ -83,13 +83,13 @@ class ElLoadVpnAd {
     }
 
     /**
-     * 加载vpn原生广告
+     * 加载back原生广告
      */
-    private fun loadHomeAdvertisementEl(context: Context,adData: ElAdBean) {
-        val id = takeSortedAdIDEl(adIndexEl, adData.el_vpn)
-        KLog.d(logTagEl, "vpn---原生广告id=$id;权重=${adData.el_vpn.getOrNull(adIndexEl)?.el_weight}")
+    private fun loadBackAdvertisementEl(context: Context,adData: ElAdBean) {
+        val id = takeSortedAdIDEl(adIndexEl, adData.el_back)
+        KLog.d(logTagEl, "back---原生广告id=$id;权重=${adData.el_back.getOrNull(adIndexEl)?.el_weight}")
 
-        val vpnNativeAds = AdLoader.Builder(
+        val homeNativeAds = AdLoader.Builder(
             context.applicationContext,
             id
         )
@@ -103,11 +103,11 @@ class ElLoadVpnAd {
             .setMediaAspectRatio(NativeAdOptions.NATIVE_MEDIA_ASPECT_RATIO_PORTRAIT)
             .build()
 
-        vpnNativeAds.withNativeAdOptions(adOptions)
-        vpnNativeAds.forNativeAd {
+        homeNativeAds.withNativeAdOptions(adOptions)
+        homeNativeAds.forNativeAd {
             appAdDataEl = it
         }
-        vpnNativeAds.withAdListener(object : AdListener() {
+        homeNativeAds.withAdListener(object : AdListener() {
             override fun onAdFailedToLoad(loadAdError: LoadAdError) {
                 super.onAdFailedToLoad(loadAdError)
                 val error =
@@ -116,11 +116,11 @@ class ElLoadVpnAd {
           """"
                 isLoadingEl = false
                 appAdDataEl = null
-                KLog.d(logTagEl, "vpn---加载vpn原生加载失败: $error")
+                KLog.d(logTagEl, "back---加载back原生加载失败: $error")
 
-                if (adIndexEl < adData.el_vpn.size - 1) {
+                if (adIndexEl < adData.el_back.size - 1) {
                     adIndexEl++
-                    loadHomeAdvertisementEl(context,adData)
+                    loadBackAdvertisementEl(context,adData)
                 }else{
                     adIndexEl = 0
                 }
@@ -128,7 +128,7 @@ class ElLoadVpnAd {
 
             override fun onAdLoaded() {
                 super.onAdLoaded()
-                KLog.d(logTagEl, "vpn---加载vpn原生广告成功")
+                KLog.d(logTagEl, "back---加载back原生广告成功")
                 loadTimeEl = Date().time
                 isLoadingEl = false
                 adIndexEl = 0
@@ -136,41 +136,41 @@ class ElLoadVpnAd {
 
             override fun onAdOpened() {
                 super.onAdOpened()
-                KLog.d(logTagEl, "vpn---点击vpn原生广告")
+                KLog.d(logTagEl, "back---点击back原生广告")
                 recordNumberOfAdClickEl()
             }
         }).build().loadAd(AdRequest.Builder().build())
     }
 
     /**
-     * 设置展示vpn原生广告
+     * 设置展示back原生广告
      */
-    fun setDisplayHomeNativeAdEl(activity: AppCompatActivity, binding: ActivityMainBinding) {
+    fun setDisplayBackNativeAdEl(activity: AppCompatActivity, view: ViewGroup,img:ImageView) {
         activity.runOnUiThread {
             appAdDataEl.let {
-                if (it != null && !whetherToShowEl&& activity.lifecycle.currentState == Lifecycle.State.RESUMED) {
+                if (it != null && !whetherToShowEl) {
                     val activityDestroyed: Boolean = activity.isDestroyed
                     if (activityDestroyed || activity.isFinishing || activity.isChangingConfigurations) {
                         it.destroy()
                         return@let
                     }
                     val adView = activity.layoutInflater
-                        .inflate(R.layout.layout_main_native, null) as NativeAdView
+                        .inflate(R.layout.layout_back_native_el, null) as NativeAdView
                     // 对应原生组件
                     setCorrespondingNativeComponentEl(it, adView)
-                    binding.elAdFrame.removeAllViews()
-                    binding.elAdFrame.addView(adView)
-                    binding.vpnAdEl = true
+                    view.removeAllViews()
+                    view.addView(adView)
+                    view.visibility =View.VISIBLE
+                    img.visibility =View.GONE
                     recordNumberOfAdDisplaysEl()
                     whetherToShowEl = true
                     App.nativeAdRefreshEl = false
                     appAdDataEl = null
-                    KLog.d(logTagEl, "vpn--原生广告--展示")
+                    KLog.d(logTagEl, "back--原生广告--展示")
                     //重新缓存
                     advertisementLoadingEl(activity)
                 }
             }
-
         }
     }
 

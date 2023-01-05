@@ -1,23 +1,15 @@
 {
-  "el_show_num": 30,
+  "el_show_num": 300,
   "el_click_num": 5,
   "el_open": [
     {
       "el_type": "open",
       "el_platform": "admob",
-      "el_id": "ca-app-pub-3940256099942544/3419835294",
+      "el_id": "ca-app-pub-3940256099942544/3419835294x",
       "el_weight": 99
     }
   ],
-  "el_home": [
-    {
-      "el_type": "primitive",
-      "el_platform": "admob",
-      "el_id": "ca-app-pub-3940256099942544/1044960115",
-      "el_weight": 99
-    }
-  ],
-  "el_translation": [
+  "el_back": [
     {
       "el_type": "primitive",
       "el_platform": "admob",
@@ -25,7 +17,23 @@
       "el_weight": 99
     }
   ],
-  "el_back": [
+  "el_vpn": [
+    {
+      "el_type": "primitive",
+      "el_platform": "admob",
+      "el_id": "ca-app-pub-3940256099942544/2247696110",
+      "el_weight": 99
+    }
+  ],
+  "el_result": [
+    {
+      "el_type": "primitive",
+      "el_platform": "admob",
+      "el_id": "ca-app-pub-3940256099942544/2247696110",
+      "el_weight": 99
+    }
+  ],
+  "el_connect": [
     {
       "el_type": "screen",
       "el_platform": "admob",
